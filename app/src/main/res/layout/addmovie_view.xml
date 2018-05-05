@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/bigtitle"
+        android:layout_width="400dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginStart="50dp"
+        android:text="Add Movies!"
+        android:textAllCaps="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="50dp" />
+
+
+    <TextView
+        android:id="@+id/addtitle"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/bigtitle"
+        android:layout_marginTop="12dp"
+        android:text="Movie Title: "
+        android:textColor="@color/colorPrimary"
+        android:textSize="25dp" />
+
+
+    <TextView
+        android:id="@+id/addid"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/addtitle"
+        android:layout_marginTop="12dp"
+        android:text="Movie ID: "
+        android:textColor="@color/colorPrimary"
+        android:textSize="25dp" />
+
+    <EditText
+        android:id="@+id/titleEdit"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/addtitle"
+        android:layout_alignBottom="@+id/addtitle"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="37dp"
+        android:layout_marginRight="37dp" />
+
+    <EditText
+        android:id="@+id/idEdit"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/titleEdit"
+        android:layout_toEndOf="@+id/addtitle"
+        android:layout_toRightOf="@+id/addtitle" />
+
+    <Button
+        android:id="@+id/addbutton2"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:text="ADD"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="83dp"
+        android:onClick="buttonPressed"/>
+
+
+
+</RelativeLayout>
