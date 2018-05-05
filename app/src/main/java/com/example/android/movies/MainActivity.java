@@ -3,6 +3,7 @@ package com.example.android.movies;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
@@ -18,13 +19,14 @@ import android.widget.TextView;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String[] movies = {"JAWS", "Airplane!", "Raiders of the Lost Ark", "Ghostbusters", "Groundhog Day", "Dumb and Dumber"};
     private ListView listView1;
 
-    public static ArrayList<String> movieTitles;
+    public static ArrayList<String> Titles;
     public static ArrayList<String> movieIDs;
 
     private String[] id = {"tt0073195", "tt0080339", "tt0082971", "tt0087332", "tt0107048", "tt0109686"};
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Handler handler;
     private AlertDialog DeletionPrompt;
+    private SharedPreferences memory;
 
 
   //  Shared Preferences p = getPreferences(context.mode_private);
@@ -62,13 +65,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        memory = getPreferences(Context.MODE_PRIVATE);
         addbutton = findViewById(R.id.addbutton);
         listView1 = findViewById(R.id.listview1);
-        movieTitles = new ArrayList<String>();
+        Titles = new ArrayList<String>();
         movieIDs = new ArrayList<String>();
 
         for (int i = 0; i < movies.length; i++) {
-            movieTitles.add(movies[i]);
+            Titles.add(movies[i]);
         }
         for (int j = 0; j < id.length; j++) {
             movieIDs.add(id[j]);
@@ -99,6 +103,13 @@ public class MainActivity extends AppCompatActivity {
         );
 
         longPressed();
+
+        for(int i = 6; i < memory.getInt("Additional Movies", 0)+6; i++){
+            Titles.add(memory.getString("MOVIE"+i, "error"));
+            movieIDs.add(memory.getString("CODE"+i, "error"));
+        }
+        Map<String, ?> map = memory.getAll();
+
     }
 
 
@@ -120,9 +131,9 @@ public class MainActivity extends AppCompatActivity {
         MOVIE = data.getStringExtra("Movie Title:");
         ID = data.getStringExtra("Movie ID:");
         movieIDs.add(ID);
-        movieTitles.add(MOVIE);
+        Titles.add(MOVIE);
         ArrayAdapter<String> adapter;
-        adapter = new ArrayAdapter<String>(this, R.layout.list_item_view, movieTitles);
+        adapter = new ArrayAdapter<String>(this, R.layout.list_item_view, Titles);
         listView1.setAdapter(adapter);
 
 
@@ -146,13 +157,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         movieDelete.setPositiveButton("Let's Do It", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                movieTitles.remove(deleteIndex);
+                Titles.remove(deleteIndex);
                 movieIDs.remove(deleteIndex);
+                SharedPreferences.Editor edit = memory.edit();
+                edit.remove("MOVIE" + deleteIndex);
+                edit.remove("CODE" + deleteIndex);
+                edit.putInt("Added", memory.getInt("Added Movies", 0));
+                edit.apply();
+                Map<String, ?> map = memory.getAll();
+
+
                 ArrayAdapter<String> adapter;
-                adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item_view, movieTitles);
+                adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item_view, Titles);
                 listView1.setAdapter(adapter);
 
 
@@ -162,6 +182,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         DeletionPrompt = movieDelete.create();
+    }
+
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        SharedPreferences.Editor edit = memory.edit();
+        for(int i = 6; i < Titles.size(); i++){
+            edit.putString("Movie:" + i, Titles.get(i));
+            edit.putString("Movie ID:" + i, movieIDs.get(i));
+            edit.putInt("Additional Movies:", Titles.size()-6);
+        }
+        edit.apply();
     }
 }
 
